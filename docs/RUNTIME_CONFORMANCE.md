@@ -7,6 +7,7 @@ KeySuite v1.0.0 implements GDk9 v1.0.0 by loading `grammar/gdk9-v1.0.0.yaml`.
 ```bash
 pytest
 make release-check
+keysuite validate
 ```
 
 ## Covered Behaviors
@@ -25,3 +26,7 @@ make release-check
 - unknown action rejection
 - undeclared jurisdiction rejection
 - no output before commit
+- strict grammar schema validation
+- non-zero CLI exit on unrecovered error
+- trace and JSON CLI output
+- literal escape behavior for syntax tokens

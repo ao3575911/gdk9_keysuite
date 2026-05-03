@@ -23,15 +23,15 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
     "Topic :: Software Development :: Interpreters",
 ]
-dependencies = ["pyyaml>=6.0"]
+dependencies = ["pyyaml>=6.0,<7"]
 
 [project.scripts]
 keysuite = "reference.keysuite.src.main:main"
 
 [project.urls]
-Homepage = "https://github.com/GDk9/gdk9_keysuite"
-Documentation = "https://github.com/GDk9/gdk9_keysuite/tree/main/site"
-Standards = "https://github.com/GDk9/gdk9_keysuite/tree/main/standards"
+Homepage = "https://github.com/ao3575911/gdk9_keysuite"
+Documentation = "https://github.com/ao3575911/gdk9_keysuite/tree/main/site"
+Standards = "https://github.com/ao3575911/gdk9_keysuite/tree/main/standards"
 
 [tool.setuptools.packages.find]
 include = ["reference*"]

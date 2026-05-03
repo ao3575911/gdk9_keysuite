@@ -6,5 +6,7 @@
 | KeySuite Runtime | 1.0.0 | `pyproject.toml` |
 | Grammar | 1.0.0 | `grammar/gdk9-v1.0.0.yaml` |
 | Version Manifest | 1.0.0 set | `version/current.txt` |
+| Security Policy | 1.0.x supported | `SECURITY.md` |
+| Provenance Procedure | 1.0.0 set | `docs/RELEASE_PROVENANCE.md` |
 
 All version changes must update this table, `VERSION`, `version/current.txt`, grammar metadata, tests, and public docs together.

@@ -2,6 +2,7 @@ from reference.keysuite.src.grammar_loader import load_grammar
 from reference.keysuite.src.ime_runtime import IMEKernel
 from reference.keysuite.src.main import token_to_event
 from reference.keysuite.src.reducer import reduce_buffer
+from reference.keysuite.src.symbols import LiteralSymbol
 from reference.keysuite.src.transitions import generate_transition_table
 
 
@@ -140,6 +141,14 @@ def test_unknown_token_maps_to_invalid_from_loaded_grammar():
     grammar = load_grammar("grammar/gdk9-v1.0.0.yaml")
 
     assert token_to_event("@", grammar) == {"class": "INVALID", "value": "@"}
+
+
+def test_literal_token_maps_to_content_even_when_it_is_syntax():
+    grammar = load_grammar("grammar/gdk9-v1.0.0.yaml")
+
+    event = token_to_event(".", grammar, literal=True)
+
+    assert event == {"class": "CONTENT", "value": LiteralSymbol(".")}
 
 
 def test_transition_table_generation_rejects_missing_required_state():

@@ -36,11 +36,26 @@ pip install -e .
 keysuite "C C . 3 3"
 ```
 
+For release reproduction, install the locked dependency set with `pip install -r requirements.lock`.
+
 Expected output:
 
 ```text
 CC→33
 ```
+
+The CLI also accepts token arrays and runtime inspection commands:
+
+```bash
+keysuite C C . 3 3
+keysuite --tokens "C C . 3 3"
+keysuite --trace C C . 3 3
+keysuite --json @
+keysuite --grammar grammar/gdk9-v1.0.0.yaml validate
+keysuite inspect-grammar
+```
+
+Invalid unrecovered input exits non-zero and reports a diagnostic. The grammar-declared literal escape marker `_` treats the following token as literal content, so `keysuite A _ . B` emits `A.B`.
 
 ## Test and Release Check
 
@@ -69,20 +84,26 @@ KeySuite reads this file to generate the runtime transition table. The runtime r
 
 KeySuite contains four small runtime layers:
 
-- `grammar_loader.py` loads and unwraps the GDk9 grammar.
+- `grammar_loader.py` loads, unwraps, and schema-validates the GDk9 grammar.
 - `transitions.py` validates and compiles the transition table.
 - `ime_runtime.py` executes the finite state machine and owns volatile buffer state.
 - `reducer.py` performs pure reduction at commit.
+
+`keysuite validate` reports the loaded grammar version and SHA-256 hash for release provenance and debugging.
 
 No output is emitted before commit. Invalid events move the kernel to `ERROR`; `ABORT` clears volatile state and returns to `IDLE`.
 
 ## Documentation
 
+- Security policy: `SECURITY.md`
+- Changelog: `CHANGELOG.md`
 - Site index: `site/index.md`
 - Architecture docs: `site/architecture/`
 - Governance docs: `site/governance/`
 - Standards docs: `standards/`
 - Release docs: `docs/`
+- Threat model: `docs/THREAT_MODEL.md`
+- Release provenance: `docs/RELEASE_PROVENANCE.md`
 - Runtime reference: `reference/README.md`
 - Script reference: `scripts/README.md`
 

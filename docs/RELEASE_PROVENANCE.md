@@ -1,0 +1,39 @@
+# Release Provenance
+
+This repository treats `grammar/gdk9-v1.0.0.yaml`, `standards/`, `reference/`, and `tests/` as the release-critical artifact set.
+
+## Local Evidence
+
+Run before tagging or publishing:
+
+```bash
+pip install -r requirements.lock
+make release-check
+keysuite validate
+python -m compileall -q reference tests
+```
+
+## Artifact Hashes
+
+Generate release checksums with:
+
+```bash
+python -m hashlib sha256 grammar/gdk9-v1.0.0.yaml VERSION version/current.txt
+```
+
+Attach checksum output to release notes or release assets.
+
+## Registry and Signing
+
+For published package artifacts:
+
+- build from a clean checkout
+- publish through a CI workflow, not a local workstation
+- retain workflow logs for provenance
+- attach SHA-256 checksums for source and wheel artifacts
+- prefer Sigstore/GitHub artifact attestations when publishing to PyPI or GitHub Releases
+- refresh `requirements.lock` from a trusted environment when dependency versions change
+
+## SBOM
+
+Generate an SBOM during release once a package registry target is selected. CycloneDX and SPDX are acceptable formats. The SBOM should include runtime dependencies and build tooling used to produce release artifacts.

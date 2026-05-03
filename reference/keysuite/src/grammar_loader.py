@@ -1,4 +1,5 @@
 import yaml
+from .schema import validate_grammar
 
 
 def _unwrap_grammar(data: dict) -> dict:
@@ -9,4 +10,4 @@ def _unwrap_grammar(data: dict) -> dict:
 
 def load_grammar(path: str) -> dict:
     with open(path, "r", encoding="utf-8") as f:
-        return _unwrap_grammar(yaml.safe_load(f))
+        return validate_grammar(_unwrap_grammar(yaml.safe_load(f)))

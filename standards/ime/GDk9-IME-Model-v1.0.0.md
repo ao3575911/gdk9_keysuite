@@ -39,3 +39,9 @@ Only `reduce_and_emit` MAY emit output. In v1.0.0, `reduce_and_emit` is reachabl
 ## Error State
 
 Invalid or out-of-jurisdiction events MUST NOT be coerced into content. They move the kernel to `ERROR` unless the grammar explicitly defines another transition for that state and event class.
+
+`MODE_SHIFT` from `IDLE` has no v1.0.0 transition and therefore enters `ERROR`. Mode context must be captured from an existing composition.
+
+## Literal Escape
+
+The literal escape marker is handled before event dispatch. When `_` precedes a token, the following token enters the runtime as literal `CONTENT`. Escaped bind markers do not form implication boundaries.

@@ -36,6 +36,8 @@ Every runtime event class MUST map to declared symbol jurisdiction:
 - `ROLLBACK` maps to `symbols.control.rollback`
 - `ABORT` maps to `symbols.control.abort`
 
+`symbols.escape.literal` declares the literal escape marker. In GDk9 v1.0.0, KeySuite consumes that marker at tokenization time and treats the next token as literal `CONTENT`, even when the token text would otherwise be syntax or control. The escape marker itself is not sent into the finite-state transition table.
+
 Undeclared event classes MUST NOT be accepted into the transition table.
 
 ## States
@@ -74,3 +76,16 @@ EVENT_CLASS:
 ```
 
 The transition compiler MUST reject unknown states, unknown actions, malformed entries, and event classes without declared symbol jurisdiction.
+
+## Schema Validation
+
+The grammar loader MUST reject:
+
+- unsupported top-level keys
+- missing required fields
+- unsupported grammar, standard, or runtime versions
+- malformed content ranges
+- duplicate exact tokens across syntax, commit, control, and escape declarations
+- unsupported event classes or actions
+- transitions that reference unknown states or actions
+- states other than `ERROR` that are unreachable from `IDLE`

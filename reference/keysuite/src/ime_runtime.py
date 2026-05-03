@@ -1,3 +1,6 @@
+from .symbols import symbol_text
+
+
 class IMEKernel:
     def __init__(self, transitions: dict, reducer):
         self.transitions = transitions
@@ -29,7 +32,7 @@ class IMEKernel:
         elif action == "mark_bind":
             self.buffer.append(".")
         elif action == "set_mode":
-            self.mode = "".join(self.buffer) if self.buffer else None
+            self.mode = "".join(symbol_text(symbol) for symbol in self.buffer) if self.buffer else None
             self.buffer.clear()
         elif action == "pop":
             if self.buffer:
