@@ -1,5 +1,6 @@
 # GDk9 - Symbolic Implication Infrastructure
 <img width="240" height="64" alt="image" src="https://github.com/user-attachments/assets/c8ac739a-e058-45f4-afcc-763d16ff3cc9" />
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Click_Here-brightgreen?style=for-the-badge&logo=rocket)](https://gdk-9-key-suite-runtime-gui--ao3575911.replit.app)
 
 GDk9 is a deterministic symbolic implication architecture. KeySuite is the
 reference runtime for GDk9 v1.0.0. 
