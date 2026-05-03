@@ -1,0 +1,6 @@
+{"id":"invalid.symbol.001","tokens":["@"],"output":null,"outputs":[],"final_state":"ERROR","exit_code":1}
+{"id":"invalid.symbol.002","tokens":["A","@"],"output":null,"outputs":[],"final_state":"ERROR","exit_code":1}
+{"id":"invalid.symbol.003","tokens":["-"],"output":null,"outputs":[],"final_state":"ERROR","exit_code":1}
+{"id":"invalid.recovery.001","tokens":["@","ESC"],"output":null,"outputs":[],"final_state":"IDLE","exit_code":0}
+{"id":"invalid.recovery.002","tokens":["A","@","ESC"],"output":null,"outputs":[],"final_state":"IDLE","exit_code":0}
+{"id":"invalid.commit.001","tokens":["@","SPACE"],"output":null,"outputs":[],"final_state":"ERROR","exit_code":1}

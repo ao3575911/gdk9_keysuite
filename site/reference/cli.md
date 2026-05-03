@@ -23,6 +23,7 @@ keysuite --trace C C . 3 3
 keysuite --json @
 keysuite validate
 keysuite inspect-grammar
+keysuite conformance conformance/vectors
 keysuite reduce A . B
 ```
 

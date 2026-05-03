@@ -3,6 +3,7 @@ import hashlib
 import json
 import sys
 from pathlib import Path
+from .conformance import ConformanceResult, run_conformance
 from .grammar_loader import load_grammar
 from .transitions import generate_transition_table
 from .ime_runtime import IMEKernel
@@ -11,6 +12,7 @@ from .schema import EXPECTED_VERSION
 from .symbols import LiteralSymbol
 
 GRAMMAR_FILE = Path("grammar") / "gdk9-v1.0.0.yaml"
+CONFORMANCE_DIR = Path("conformance") / "vectors"
 
 
 def _in_range(token: str, range_spec: str) -> bool:
@@ -56,6 +58,18 @@ def grammar_path() -> Path:
             return candidate
     checked = ", ".join(str(candidate) for candidate in candidates)
     raise FileNotFoundError(f"Unable to locate GDk9 grammar. Checked: {checked}")
+
+
+def conformance_path() -> Path:
+    candidates = [
+        Path(__file__).resolve().parents[3] / CONFORMANCE_DIR,
+        Path.cwd() / CONFORMANCE_DIR,
+    ]
+    for candidate in candidates:
+        if candidate.exists():
+            return candidate
+    checked = ", ".join(str(candidate) for candidate in candidates)
+    raise FileNotFoundError(f"Unable to locate GDk9 conformance vectors. Checked: {checked}")
 
 
 def file_sha256(path: Path) -> str:
@@ -178,6 +192,47 @@ def _print_result(result: dict, json_output: bool, trace_output: bool, grammar_h
         print(result["error"]["message"], file=sys.stderr)
 
 
+def _conformance_payload(results: list[ConformanceResult], vector_path: Path, grammar_file: Path, grammar_hash: str) -> dict:
+    failures = [result for result in results if not result.passed]
+    return {
+        "status": "ok" if not failures else "error",
+        "passed": len(results) - len(failures),
+        "failed": len(failures),
+        "total": len(results),
+        "vectors": str(vector_path),
+        "grammar": str(grammar_file),
+        "grammar_sha256": grammar_hash,
+        "failures": [
+            {
+                "id": failure.id,
+                "expected": failure.expected,
+                "actual": failure.actual,
+                "error": failure.error,
+            }
+            for failure in failures
+        ],
+    }
+
+
+def _print_conformance(payload: dict, json_output: bool) -> None:
+    if json_output:
+        print(json.dumps(payload, indent=2, sort_keys=True))
+        return
+
+    if payload["status"] == "ok":
+        print(f"conformance ok: {payload['passed']}/{payload['total']} vectors passed")
+        return
+
+    print(f"conformance failed: {payload['failed']}/{payload['total']} vectors failed", file=sys.stderr)
+    for failure in payload["failures"]:
+        print(
+            f"{failure['id']}: expected={failure['expected']} actual={failure['actual']}",
+            file=sys.stderr,
+        )
+        if failure["error"]:
+            print(f"{failure['id']}: {failure['error']}", file=sys.stderr)
+
+
 def _parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         prog="keysuite",
@@ -200,7 +255,7 @@ def main(argv: list[str] | None = None) -> int:
     table = generate_transition_table(grammar)
     command = "run"
     args = list(ns.args)
-    if args and args[0] in {"run", "validate", "trace", "reduce", "inspect-grammar"}:
+    if args and args[0] in {"run", "validate", "trace", "reduce", "inspect-grammar", "conformance"}:
         command = args.pop(0)
     if command == "trace":
         ns.trace = True
@@ -240,6 +295,16 @@ def main(argv: list[str] | None = None) -> int:
             for key, value in payload.items():
                 print(f"{key}: {value}")
         return 0
+
+    if command == "conformance":
+        vector_path = Path(args[0]) if args else conformance_path()
+        results = run_conformance(
+            vector_path,
+            lambda tokens: _run_tokens(tokens, grammar, table, auto_commit=not ns.no_auto_commit),
+        )
+        payload = _conformance_payload(results, vector_path, grammar_file, grammar_hash)
+        _print_conformance(payload, ns.json)
+        return 0 if payload["status"] == "ok" else 1
 
     raw = _normalize_tokens(args, ns.tokens)
     if not raw:

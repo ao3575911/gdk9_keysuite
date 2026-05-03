@@ -1,0 +1,8 @@
+{"id":"compose.basic.001","tokens":["A","B","SPACE"],"output":"AB","outputs":["AB"],"final_state":"IDLE","exit_code":0}
+{"id":"compose.basic.002","tokens":["C","D","ENTER"],"output":"CD","outputs":["CD"],"final_state":"IDLE","exit_code":0}
+{"id":"compose.basic.003","tokens":["1","2","3","TAB"],"output":"123","outputs":["123"],"final_state":"IDLE","exit_code":0}
+{"id":"implication.basic.001","tokens":["C","C",".","3","3","SPACE"],"output":"CC→33","outputs":["CC→33"],"final_state":"IDLE","exit_code":0}
+{"id":"implication.basic.002","tokens":["A",".","B","ENTER"],"output":"A→B","outputs":["A→B"],"final_state":"IDLE","exit_code":0}
+{"id":"mode.basic.001","tokens":["X",":","A","B","SPACE"],"output":"X(AB)","outputs":["X(AB)"],"final_state":"IDLE","exit_code":0}
+{"id":"commit.idle.001","tokens":["SPACE"],"output":null,"outputs":[],"final_state":"IDLE","exit_code":0}
+{"id":"commit.timeout.001","tokens":["A","B","TIMEOUT"],"output":"AB","outputs":["AB"],"final_state":"IDLE","exit_code":0}

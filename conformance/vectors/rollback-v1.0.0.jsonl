@@ -1,0 +1,4 @@
+{"id":"rollback.basic.001","tokens":["A","B","BACKSPACE","SPACE"],"output":"A","final_state":"IDLE","exit_code":0}
+{"id":"rollback.empty.001","tokens":["A","BACKSPACE","SPACE"],"output":"","final_state":"IDLE","exit_code":0}
+{"id":"rollback.bind.001","tokens":["A",".","B","BACKSPACE","SPACE"],"output":"A→","final_state":"IDLE","exit_code":0}
+{"id":"rollback.after.escape.001","tokens":["A","_",".","BACKSPACE","SPACE"],"output":"A","final_state":"IDLE","exit_code":0}

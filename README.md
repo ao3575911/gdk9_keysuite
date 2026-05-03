@@ -53,6 +53,7 @@ keysuite --trace C C . 3 3
 keysuite --json @
 keysuite --grammar grammar/gdk9-v1.0.0.yaml validate
 keysuite inspect-grammar
+keysuite conformance conformance/vectors
 ```
 
 Invalid unrecovered input exits non-zero and reports a diagnostic. The grammar-declared literal escape marker `_` treats the following token as literal content, so `keysuite A _ . B` emits `A.B`.
@@ -61,6 +62,7 @@ Invalid unrecovered input exits non-zero and reports a diagnostic. The grammar-d
 
 ```bash
 pytest
+make conformance
 make release-check
 ```
 

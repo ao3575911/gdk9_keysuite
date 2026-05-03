@@ -16,15 +16,16 @@ install:
 test:
 	PYTHONDONTWRITEBYTECODE=1 $(PYTEST) -q -p no:cacheprovider
 
-conformance: test
+conformance:
+	$(KEYSUITE) conformance conformance/vectors
 
 docs:
 	sh make_docs.sh
 
-release-check: test
+release-check: test conformance
 	$(KEYSUITE) "$(EXAMPLE)"
 	$(PYTHON) -m compileall -q reference tests
-
+	./scripts/release_acceptance.sh
 run:
 	$(KEYSUITE) "$(EXAMPLE)"
 

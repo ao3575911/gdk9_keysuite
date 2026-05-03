@@ -1,0 +1,7 @@
+{"id":"escape.literal.bind.001","tokens":["_","."],"output":".","outputs":["."],"final_state":"IDLE","exit_code":0}
+{"id":"escape.literal.mode.001","tokens":["_",":"],"output":":","outputs":[":"],"final_state":"IDLE","exit_code":0}
+{"id":"escape.literal.escape.001","tokens":["_","_"],"output":"_","outputs":["_"],"final_state":"IDLE","exit_code":0}
+{"id":"escape.compose.001","tokens":["A","_",".","B","SPACE"],"output":"A.B","outputs":["A.B"],"final_state":"IDLE","exit_code":0}
+{"id":"escape.literal.commit.001","tokens":["_","SPACE"],"output":"SPACE","outputs":["SPACE"],"final_state":"IDLE","exit_code":0}
+{"id":"escape.literal.invalid.001","tokens":["_","@"],"output":"@","outputs":["@"],"final_state":"IDLE","exit_code":0}
+{"id":"escape.trailing.001","tokens":["_"],"output":null,"outputs":[],"final_state":"ERROR","exit_code":1}

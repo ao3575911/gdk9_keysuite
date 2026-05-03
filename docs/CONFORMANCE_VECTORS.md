@@ -14,3 +14,10 @@ These vectors are canonical examples for the KeySuite reference runtime.
 | `@` | error | invalid token enters unrecovered `ERROR` |
 
 The CLI appends `SPACE` as an automatic commit unless `--no-auto-commit` is used.
+
+Run the full vector suite with:
+
+```bash
+keysuite conformance conformance/vectors
+make conformance
+```
