@@ -413,16 +413,21 @@ class RuntimeSession:
     def __post_init__(self) -> None:
         self.kernel = IMEKernel(self.table, reduce_buffer)
 
+    def _kernel(self) -> IMEKernel:
+        if self.kernel is None:
+            raise RuntimeFailure("runtime kernel not initialized")
+        return self.kernel
+
     @property
     def escape_token(self) -> str | None:
         return self.grammar.get("symbols", {}).get("escape", {}).get("literal")
 
     def snapshot(self) -> dict:
-        assert self.kernel is not None
+        kernel = self._kernel()
         return {
-            "state": self.kernel.state,
-            "buffer": _stringify_buffer(self.kernel.buffer),
-            "mode": self.kernel.mode,
+            "state": kernel.state,
+            "buffer": _stringify_buffer(kernel.buffer),
+            "mode": kernel.mode,
             "debug_level": self.debug_level,
             "escaped": self.escaped,
         }
@@ -435,12 +440,12 @@ class RuntimeSession:
         }
 
     def _handle_event(self, token: str, literal: bool = False) -> None:
-        assert self.kernel is not None
+        kernel = self._kernel()
         event = token_to_event(token, self.grammar, literal=literal)
-        from_state = self.kernel.state
+        from_state = kernel.state
         rule = self.table.get(from_state, {}).get(event["class"])
         before = self.snapshot() if self.debug_level >= 3 else None
-        output = self.kernel.handle(event)
+        output = kernel.handle(event)
         if output is not None:
             self.outputs.append(output)
         after = self.snapshot() if self.debug_level >= 3 else None
@@ -448,7 +453,7 @@ class RuntimeSession:
             "from_state": from_state,
             "event_class": event["class"],
             "value": _stringify_value(event["value"]),
-            "to_state": self.kernel.state,
+            "to_state": kernel.state,
             "action": rule[1] if rule else "error",
             "output": output,
             "literal": literal,
@@ -458,7 +463,7 @@ class RuntimeSession:
         if after is not None:
             step["after"] = after
         self.trace.append(step)
-        if self.kernel.state == "ERROR":
+        if kernel.state == "ERROR":
             self._record_error(
                 token,
                 event["class"],
@@ -492,9 +497,9 @@ class RuntimeSession:
         self._handle_event(token)
 
     def finalize(self) -> None:
-        assert self.kernel is not None
+        kernel = self._kernel()
         if self.error is None and self.escaped:
-            self.kernel.state = "ERROR"
+            kernel.state = "ERROR"
             self._record_error(
                 self.escape_token or "_",
                 "ESCAPE",
@@ -503,7 +508,7 @@ class RuntimeSession:
             self.escaped = False
             return
 
-        if self.auto_commit and self.error is None and self.kernel.state != "ERROR":
+        if self.auto_commit and self.error is None and kernel.state != "ERROR":
             self._handle_event("SPACE")
 
     def process(self, tokens: list[str], finalize: bool = True) -> dict:
@@ -514,12 +519,12 @@ class RuntimeSession:
         return self.result()
 
     def result(self) -> dict:
-        assert self.kernel is not None
+        kernel = self._kernel()
         return {
-            "status": "error" if self.kernel.state == "ERROR" else "ok",
-            "state": self.kernel.state,
-            "buffer": _stringify_buffer(self.kernel.buffer),
-            "mode": self.kernel.mode,
+            "status": "error" if kernel.state == "ERROR" else "ok",
+            "state": kernel.state,
+            "buffer": _stringify_buffer(kernel.buffer),
+            "mode": kernel.mode,
             "outputs": list(self.outputs),
             "trace": list(self.trace),
             "error": self.error,
