@@ -3,7 +3,7 @@ PYTEST ?= $(PYTHON) -m pytest
 KEYSUITE ?= $(PYTHON) -m reference.keysuite.src.main
 EXAMPLE ?= C C . 3 3
 
-.PHONY: bootstrap install test conformance run docs release-check clean
+.PHONY: bootstrap install test conformance run docs release-check clean bandit
 
 bootstrap:
 	$(PYTHON) -m venv .venv
@@ -26,6 +26,10 @@ release-check: test conformance
 	$(KEYSUITE) "$(EXAMPLE)"
 	$(PYTHON) -m compileall -q reference tests
 	./scripts/release_acceptance.sh
+
+bandit:
+	bandit -r .
+
 run:
 	$(KEYSUITE) "$(EXAMPLE)"
 

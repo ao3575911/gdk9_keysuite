@@ -28,6 +28,7 @@ COMMANDS = {
     "completion",
     "dump-fsm",
 }
+DOUBLE_DASH = "-" * 2
 ROOT_OPTIONS_WITH_VALUES = {"--grammar", "--tokens", "--file", "--debug"}
 EXIT_OK = 0
 EXIT_RUNTIME = 1
@@ -213,7 +214,7 @@ def _legacy_run_insertion(argv: list[str]) -> list[str]:
     index = 0
     while index < len(argv):
         token = argv[index]
-        if token == "--":
+        if token == DOUBLE_DASH:
             if index + 1 >= len(argv):
                 return argv
             return argv[:index] + ["run"] + argv[index:]
