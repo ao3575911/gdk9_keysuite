@@ -1,0 +1,27 @@
+MIT License
+
+Copyright (c) 2026 GDk9
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files, to deal in the Software
+without restriction, including without limitation the rights to use, copy,
+modify, merge, publish, distribute, sublicense, and/or sell copies.
+
+---
+
+GDk9 Standard Governance Clause
+
+The GDk9 Core Standard, Grammar Specification, IME Model, Reduction Contract,
+and Conformance Specification (collectively "GDk9 Standards") are governed
+separately from the software implementation.
+
+The GDk9 Enhancement Proposal (GDk9-EP) process is the canonical governance
+path for changes that claim to update GDk9 standards.
+
+Forks of this repository may modify implementation code (KeySuite), but MUST NOT
+represent altered behavior or altered standards as GDk9-compliant unless the
+changes adhere to the published specifications for the version claimed.
+
+---
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
