@@ -1,10 +1,10 @@
 # Conformance Specification
 
-GDk9 v1.0.0 conformance requires tests that prove grammar version identity,
+GDk9 v1.0.0 conformance requires tests proving grammar version identity,
 explicit symbol jurisdiction, deterministic output, commit-only emission,
 rollback behavior, abort recovery, invalid-event error behavior, pure reduction,
 transition-table validation, strict grammar schema validation, CLI diagnostics,
-trace output, JSON output, and literal escape behavior.
+trace and debug output, JSON output, and literal escape behavior.
 
 Repository evidence commands:
 

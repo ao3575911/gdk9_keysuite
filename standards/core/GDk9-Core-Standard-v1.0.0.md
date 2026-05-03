@@ -12,7 +12,7 @@ GDk9 defines deterministic symbolic implication infrastructure. It specifies how
 
 ## Core Requirements
 
-An implementation claiming GDk9 v1.0.0 conformance MUST:
+An implementation claiming GDk9 v1.0.0 conformance MUST satisfy all of the following:
 
 - classify every input event under explicit symbol jurisdiction
 - execute through a finite state machine

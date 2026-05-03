@@ -8,7 +8,7 @@ Normative for GDk9 v1.0.0.
 
 ## Conformance Claim
 
-An implementation MAY claim GDk9 v1.0.0 conformance only when it passes tests that prove:
+An implementation MAY claim GDk9 v1.0.0 conformance only if it passes tests proving:
 
 - grammar version identity
 - explicit symbol jurisdiction
@@ -22,7 +22,7 @@ An implementation MAY claim GDk9 v1.0.0 conformance only when it passes tests th
 
 ## Required Evidence
 
-A release MUST publish:
+A release MUST publish the following evidence:
 
 - grammar file path and version
 - runtime version
@@ -44,7 +44,7 @@ make release-check
 
 ## Failure Rules
 
-An implementation is non-conformant if it:
+An implementation is non-conformant if any of the following are true:
 
 - emits output before commit
 - treats undeclared symbols as valid content

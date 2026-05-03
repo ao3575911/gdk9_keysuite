@@ -6,6 +6,17 @@ It loads `grammar/gdk9-v1.0.0.yaml`, validates grammar schema and
 grammar-controlled transitions, processes finite-state events, and emits output
 only at commit.
 
+## Command Surface
+
+- `keysuite run`
+- `keysuite validate`
+- `keysuite inspect-grammar`
+- `keysuite dump-fsm`
+- `keysuite reduce`
+- `keysuite conformance`
+- `keysuite repl`
+- `keysuite completion`
+
 Primary source files:
 
 - `reference/keysuite/src/grammar_loader.py`

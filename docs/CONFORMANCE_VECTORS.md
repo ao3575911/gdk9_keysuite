@@ -20,4 +20,5 @@ Run the full vector suite with:
 ```bash
 keysuite conformance conformance/vectors
 make conformance
+keysuite run --file examples/basic.tokens
 ```

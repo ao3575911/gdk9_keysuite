@@ -8,6 +8,8 @@ KeySuite v1.0.0 implements GDk9 v1.0.0 by loading `grammar/gdk9-v1.0.0.yaml`.
 pytest
 make release-check
 keysuite validate
+keysuite run --tokens "C C . 3 3 SPACE"
+keysuite inspect-grammar --fsm
 ```
 
 ## Covered Behaviors
@@ -28,5 +30,7 @@ keysuite validate
 - no output before commit
 - strict grammar schema validation
 - non-zero CLI exit on unrecovered error
-- trace and JSON CLI output
+- trace, debug, and JSON CLI output
 - literal escape behavior for syntax tokens
+- stdin and file input
+- REPL command handling
