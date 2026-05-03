@@ -1,11 +1,20 @@
-```markdown
 # GDk9 - Symbolic Implication Infrastructure
 
-<img width="240" height="64" alt="GDk9 Logo" src="https://github.com/user-attachments/assets/c8ac739a-e058-45f4-afcc-763d16ff3cc9" />
+<p align="center">
+  <img width="240" height="64" alt="GDk9 Logo" src="https://github.com/user-attachments/assets/c8ac739a-e058-45f4-afcc-763d16ff3cc9" />
+</p>
 
-[![Live Demo](https://img.shields.io/badge/Live_Demo-Click_Here-brightgreen?style=for-the-badge&logo=rocket)](https://gdk-9-key-suite-runtime-gui--ao3575911.replit.app)
-[![Version](https://img.shields.io/badge/version-1.0.0-blue)](https://github.com/ao3575911/gdk9_keysuite/releases)
-[![License](https://img.shields.io/badge/license-Apache%202.0-green)](LICENSE)
+<p align="center">
+  <a href="https://gdk-9-key-suite-runtime-gui--ao3575911.replit.app/">
+    <img alt="Live Demo" src="https://img.shields.io/badge/Live%20Demo-Open%20GUI-brightgreen?style=for-the-badge&logo=rocket" />
+  </a>
+  <a href="https://github.com/ao3575911/gdk9_keysuite/releases">
+    <img alt="Version 1.0.0" src="https://img.shields.io/badge/Version-1.0.0-blue?style=for-the-badge" />
+  </a>
+  <a href="LICENSE">
+    <img alt="License MIT" src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" />
+  </a>
+</p>
 
 **GDk9** is a deterministic symbolic implication architecture.  
 **KeySuite** is the official reference runtime for GDk9 v1.0.0.
@@ -121,4 +130,3 @@ make release-check        # pre-release validation
 ---
 
 **GDk9** is intentionally narrow by design — focused on correctness, determinism, and explicit symbolic jurisdiction.
-```
