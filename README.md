@@ -1,7 +1,8 @@
 # GDk9 - Symbolic Implication Infrastructure
+<img width="240" height="64" alt="image" src="https://github.com/user-attachments/assets/c8ac739a-e058-45f4-afcc-763d16ff3cc9" />
 
 GDk9 is a deterministic symbolic implication architecture. KeySuite is the
-reference runtime for GDk9 v1.0.0.
+reference runtime for GDk9 v1.0.0. 
 
 The runtime is intentionally narrow: symbols enter explicit jurisdiction, move
 through a finite state machine, and emit output only at a commit boundary after
@@ -38,6 +39,7 @@ CC→33
 ```
 
 ## CLI Reference
+<img width="280" height="64" alt="image" src="https://github.com/user-attachments/assets/b3443385-1189-4285-8ea7-2ff552af32c7" />
 
 ### `keysuite run`
 
