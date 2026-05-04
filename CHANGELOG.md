@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Added the importable `keysuite` package API with `Runtime`, `AsyncRuntime`, `Grammar`, `RuntimeSession`, `IMEKernel`, `load_grammar`, and `reduce_buffer`.
+- Added TOML/env/runtime configuration, bounded history, macro expansion, async session wrappers, and FastAPI REST/WebSocket endpoints.
+- Introduced package version `1.1.0.dev0` and package data loading for the bundled grammar.
 - Added GitHub Actions CI, CodeQL, dependency audit, and static security scanning workflows.
 - Added a security policy and Dependabot configuration.
 - Hardened the CLI with positional token arrays, `--tokens`, `--grammar`, `--trace`, `--json`, `--version`, `validate`, `inspect-grammar`, and `reduce`.

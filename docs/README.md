@@ -4,6 +4,10 @@ This directory contains release-oriented documentation that complements the stan
 
 ## Documents
 
+- `api.md`: Python import surface and REST API quickstart
+- `configuration.md`: TOML and environment variable precedence
+- `macros.md`: macro registration and expansion rules
+- `websocket.md`: streaming session message and event protocol
 - `GITHUB_READY.md`: final push checklist
 - `RUNTIME_CONFORMANCE.md`: runtime and test evidence
 - `VERSION_MATRIX.md`: version synchronization table

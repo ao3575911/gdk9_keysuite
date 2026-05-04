@@ -1,6 +1,6 @@
 # Runtime Conformance
 
-KeySuite v1.0.0 implements GDk9 v1.0.0 by loading `grammar/gdk9-v1.0.0.yaml`.
+KeySuite v1.1.0.dev0 implements GDk9 v1.0.0 by loading `grammar/gdk9-v1.0.0.yaml`.
 
 ## Evidence Commands
 

@@ -32,4 +32,3 @@ Run from the repository root:
 pytest
 make release-check
 ```
-
