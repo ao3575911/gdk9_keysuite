@@ -7,6 +7,8 @@
 - Fixed the CLI grammar-loader import path so the runtime resolves the bundled default grammar consistently.
 - Updated the reduction contract to reference canonical `keysuite/reducer.py` instead of the legacy reference-path implementation.
 - Added loader coverage for the grammar alias files and packaged all three grammar YAML artifacts.
+- Replaced stale `reference/keysuite/src/*` pointers in the README with canonical `keysuite/*` paths.
+- Added `httpx` to the development dependency set so FastAPI TestClient collection succeeds in CI and local Python.
 
 ## Unreleased
 

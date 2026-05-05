@@ -254,10 +254,10 @@ make release-check
 ## Grammar and Runtime
 
 - `grammar/gdk9-v1.0.0.yaml` is the canonical machine-readable control file.
-- `reference/keysuite/src/grammar_loader.py` loads and validates grammar.
-- `reference/keysuite/src/transitions.py` compiles the FSM table.
-- `reference/keysuite/src/ime_runtime.py` executes the runtime state machine.
-- `reference/keysuite/src/reducer.py` performs pure reduction at commit.
+- `keysuite/grammar_loader.py` loads and validates grammar.
+- `keysuite/transitions.py` compiles the FSM table.
+- `keysuite/runtime.py` executes the runtime state machine.
+- `keysuite/reducer.py` performs pure reduction at commit.
 
 ## Tests
 
