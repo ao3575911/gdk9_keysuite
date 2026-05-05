@@ -25,11 +25,16 @@ app = create_app()
 The app exposes:
 
 - `GET /v1/health`
+- `GET /v1/metrics`
 - `GET /v1/grammar`
+- `GET /v1/session/{session_id}`
 - `POST /v1/process`
 - `POST /v1/session`
 - `POST /v1/session/{session_id}/process`
 - `POST /v1/session/{session_id}/undo`
 - `POST /v1/session/{session_id}/redo`
+- `DELETE /v1/session/{session_id}`
 
 OpenAPI docs are available at `/docs` and `/openapi.json`.
+
+When API keys are configured, include the configured header on every `/v1` request. The default header is `X-API-Key`.

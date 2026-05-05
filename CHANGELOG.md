@@ -12,7 +12,11 @@
 
 ## Unreleased
 
-- Future maintenance and release notes will appear here.
+- Added `SessionManager` and `ConnectionManager` layers for isolated session lifecycles and websocket cleanup.
+- Added structured runtime events, in-process event bus publication, metrics, and JSON logging hooks.
+- Added API key authentication, request/session rate limiting, payload validation, and hardened websocket heartbeats.
+- Added pluggable persistence scaffolding and expanded concurrency/security regression coverage.
+- Added architecture, scaling, and security docs for the hardened runtime model.
 
 ## v1.0.0 - 2026-05-03
 

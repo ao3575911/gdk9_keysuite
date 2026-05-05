@@ -37,10 +37,32 @@ The streaming session endpoint is:
 
 The server emits JSON events for:
 
+- token acceptance
 - state transitions
+- buffer updates
 - commit emissions
 - macro expansion
 - undo / redo
 - errors
 
 Limit and validation failures are reported as error events and respect the configured runtime limits.
+
+## Message Envelope
+
+All runtime events are delivered as:
+
+```json
+{
+  "type": "STATE_TRANSITION",
+  "session_id": "abc123",
+  "payload": {},
+  "timestamp": "2026-05-05T12:00:00Z"
+}
+```
+
+## Heartbeats and Limits
+
+- Connections close after the configured idle timeout if no frames arrive.
+- The server sends a `PING` event before closing on timeout.
+- Message payloads are size-limited.
+- Per-connection message rate limits are enforced.

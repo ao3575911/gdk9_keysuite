@@ -14,7 +14,7 @@ KeySuite is a local reference runtime for GDk9 v1.0.0. The primary trust boundar
 
 ## Non-Goals
 
-KeySuite does not provide authentication, authorization, networking, credential storage, encryption, or remote service access.
+KeySuite does not provide credential storage beyond configured API keys, transport encryption, or public remote-service exposure. The API and websocket surfaces are intentionally local-first and rely on deployment controls for TLS and external network policy.
 
 ## Threats
 
@@ -26,6 +26,9 @@ KeySuite does not provide authentication, authorization, networking, credential 
 | Dependency compromise | Dependabot, bounded dependency ranges, `pip-audit` workflow |
 | Static security regression | CodeQL and Bandit workflows |
 | Release artifact tampering | Release checksum and provenance procedure |
+| API key abuse or missing authorization | Header-based API key gate with optional configured keys |
+| Session or websocket overload | Per-session and per-connection rate limiting, bounded payloads, cleanup worker |
+| Silent state leakage across clients | Per-session `IMEKernel`, history, macro context, and connection isolation |
 
 ## Review Triggers
 

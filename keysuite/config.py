@@ -41,6 +41,17 @@ def _coerce_bool(value: Any, name: str) -> bool:
     raise ConfigurationError(f"{name} must be a boolean-like value")
 
 
+def _coerce_list_of_strings(value: Any, name: str) -> list[str]:
+    if value is None:
+        return []
+    if isinstance(value, list) and all(isinstance(item, str) for item in value):
+        return list(value)
+    if isinstance(value, str):
+        tokens = [item.strip() for item in value.split(",") if item.strip()]
+        return tokens
+    raise ConfigurationError(f"{name} must be a list of strings")
+
+
 def _load_toml(path: Path | None) -> dict[str, Any]:
     if path is None or not path.exists():
         return {}
@@ -70,6 +81,24 @@ class RuntimeConfig:
     max_macro_expansion_depth: int = 16
     history_limit: int = 128
     debug_level: int = 0
+    max_sessions: int = 32
+    session_idle_ttl_seconds: int = 900
+    session_cleanup_interval_seconds: int = 60
+    max_messages_per_second: int = 20
+    max_payload_size: int = 16_384
+    connection_timeout_seconds: int = 30
+    heartbeat_interval_seconds: int = 15
+    max_requests_per_window: int = 120
+    rate_limit_window_seconds: int = 60
+    max_queue_size: int = 256
+    queue_policy: str = "reject"
+    enable_metrics: bool = True
+    enable_tracing: bool = False
+    json_logging: bool = True
+    api_key_header: str = "X-API-Key"
+    api_keys: list[str] = field(default_factory=list)
+    persistence_backend: str = "memory"
+    persistence_url: str | None = None
     macros: dict[str, list[str]] = field(default_factory=dict)
 
     def replace(self, **changes: Any) -> "RuntimeConfig":
@@ -97,6 +126,24 @@ class RuntimeConfig:
             ),
             "history_limit": toml_data.get("history_limit", 128),
             "debug_level": toml_data.get("debug_level", toml_data.get("debug", 0)),
+            "max_sessions": toml_data.get("max_sessions", 32),
+            "session_idle_ttl_seconds": toml_data.get("session_idle_ttl_seconds", 900),
+            "session_cleanup_interval_seconds": toml_data.get("session_cleanup_interval_seconds", 60),
+            "max_messages_per_second": toml_data.get("max_messages_per_second", 20),
+            "max_payload_size": toml_data.get("max_payload_size", 16_384),
+            "connection_timeout_seconds": toml_data.get("connection_timeout_seconds", 30),
+            "heartbeat_interval_seconds": toml_data.get("heartbeat_interval_seconds", 15),
+            "max_requests_per_window": toml_data.get("max_requests_per_window", 120),
+            "rate_limit_window_seconds": toml_data.get("rate_limit_window_seconds", 60),
+            "max_queue_size": toml_data.get("max_queue_size", 256),
+            "queue_policy": toml_data.get("queue_policy", "reject"),
+            "enable_metrics": toml_data.get("enable_metrics", True),
+            "enable_tracing": toml_data.get("enable_tracing", False),
+            "json_logging": toml_data.get("json_logging", True),
+            "api_key_header": toml_data.get("api_key_header", "X-API-Key"),
+            "api_keys": _coerce_list_of_strings(toml_data.get("api_keys"), "api_keys"),
+            "persistence_backend": toml_data.get("persistence_backend", "memory"),
+            "persistence_url": toml_data.get("persistence_url"),
             "macros": dict(toml_data.get("macros", {})),
         }
 
@@ -110,6 +157,24 @@ class RuntimeConfig:
             "history_limit",
             "debug_level",
             "debug",
+            "max_sessions",
+            "session_idle_ttl_seconds",
+            "session_cleanup_interval_seconds",
+            "max_messages_per_second",
+            "max_payload_size",
+            "connection_timeout_seconds",
+            "heartbeat_interval_seconds",
+            "max_requests_per_window",
+            "rate_limit_window_seconds",
+            "max_queue_size",
+            "queue_policy",
+            "enable_metrics",
+            "enable_tracing",
+            "json_logging",
+            "api_key_header",
+            "api_keys",
+            "persistence_backend",
+            "persistence_url",
             "macros",
         }
         if explicit:
@@ -127,6 +192,24 @@ class RuntimeConfig:
             "KEYSUITE_VERSION_POLICY": "version_policy",
             "KEYSUITE_MAX_MACRO_EXPANSION_DEPTH": "max_macro_expansion_depth",
             "KEYSUITE_HISTORY_LIMIT": "history_limit",
+            "KEYSUITE_MAX_SESSIONS": "max_sessions",
+            "KEYSUITE_SESSION_IDLE_TTL_SECONDS": "session_idle_ttl_seconds",
+            "KEYSUITE_SESSION_CLEANUP_INTERVAL_SECONDS": "session_cleanup_interval_seconds",
+            "KEYSUITE_MAX_MESSAGES_PER_SECOND": "max_messages_per_second",
+            "KEYSUITE_MAX_PAYLOAD_SIZE": "max_payload_size",
+            "KEYSUITE_CONNECTION_TIMEOUT_SECONDS": "connection_timeout_seconds",
+            "KEYSUITE_HEARTBEAT_INTERVAL_SECONDS": "heartbeat_interval_seconds",
+            "KEYSUITE_MAX_REQUESTS_PER_WINDOW": "max_requests_per_window",
+            "KEYSUITE_RATE_LIMIT_WINDOW_SECONDS": "rate_limit_window_seconds",
+            "KEYSUITE_MAX_QUEUE_SIZE": "max_queue_size",
+            "KEYSUITE_QUEUE_POLICY": "queue_policy",
+            "KEYSUITE_ENABLE_METRICS": "enable_metrics",
+            "KEYSUITE_ENABLE_TRACING": "enable_tracing",
+            "KEYSUITE_JSON_LOGGING": "json_logging",
+            "KEYSUITE_API_KEY_HEADER": "api_key_header",
+            "KEYSUITE_API_KEYS": "api_keys",
+            "KEYSUITE_PERSISTENCE_BACKEND": "persistence_backend",
+            "KEYSUITE_PERSISTENCE_URL": "persistence_url",
         }
         for env_key, field_name in env_map.items():
             if env_key in env:
@@ -138,6 +221,8 @@ class RuntimeConfig:
                 explicit["grammar_path"] = explicit.pop("grammar")
             if "debug" in explicit and "debug_level" not in explicit:
                 explicit["debug_level"] = explicit.pop("debug")
+            if "api_keys" in explicit:
+                explicit["api_keys"] = _coerce_list_of_strings(explicit["api_keys"], "api_keys")
             values.update(explicit)
 
         try:
@@ -148,11 +233,40 @@ class RuntimeConfig:
             )
             values["history_limit"] = _coerce_int(values["history_limit"], "history_limit")
             values["debug_level"] = _coerce_int(values["debug_level"], "debug_level")
+            values["max_sessions"] = _coerce_int(values["max_sessions"], "max_sessions")
+            values["session_idle_ttl_seconds"] = _coerce_int(
+                values["session_idle_ttl_seconds"], "session_idle_ttl_seconds"
+            )
+            values["session_cleanup_interval_seconds"] = _coerce_int(
+                values["session_cleanup_interval_seconds"], "session_cleanup_interval_seconds"
+            )
+            values["max_messages_per_second"] = _coerce_int(
+                values["max_messages_per_second"], "max_messages_per_second"
+            )
+            values["max_payload_size"] = _coerce_int(values["max_payload_size"], "max_payload_size")
+            values["connection_timeout_seconds"] = _coerce_int(
+                values["connection_timeout_seconds"], "connection_timeout_seconds"
+            )
+            values["heartbeat_interval_seconds"] = _coerce_int(
+                values["heartbeat_interval_seconds"], "heartbeat_interval_seconds"
+            )
+            values["max_requests_per_window"] = _coerce_int(
+                values["max_requests_per_window"], "max_requests_per_window"
+            )
+            values["rate_limit_window_seconds"] = _coerce_int(
+                values["rate_limit_window_seconds"], "rate_limit_window_seconds"
+            )
+            values["max_queue_size"] = _coerce_int(values["max_queue_size"], "max_queue_size")
         except ConfigurationError:
             raise
 
         if values["version_policy"] not in {"strict", "latest-compatible"}:
             raise ConfigurationError("version_policy must be 'strict' or 'latest-compatible'")
+        if values["queue_policy"] not in {"reject", "drop"}:
+            raise ConfigurationError("queue_policy must be 'reject' or 'drop'")
+        values["enable_metrics"] = _coerce_bool(values["enable_metrics"], "enable_metrics")
+        values["enable_tracing"] = _coerce_bool(values["enable_tracing"], "enable_tracing")
+        values["json_logging"] = _coerce_bool(values["json_logging"], "json_logging")
 
         macros = values.get("macros") or {}
         if not isinstance(macros, Mapping):
@@ -165,5 +279,6 @@ class RuntimeConfig:
                 raise ConfigurationError(f"macro {name!r} must be a list of strings")
             normalized_macros[name] = list(token_list)
         values["macros"] = normalized_macros
+        values["api_keys"] = sorted(set(_coerce_list_of_strings(values["api_keys"], "api_keys")))
 
         return cls(**values)
