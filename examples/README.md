@@ -34,3 +34,4 @@ keysuite conformance conformance/vectors
 - The annotations match the normative conformance vectors.
 - The examples cover success, rollback, abort, mode shift, and invalid-input paths.
 - The examples do not introduce new syntax or behavior beyond GDk9 v1.0.0.
+- The hardened runtime adds session isolation, event publication, metrics, and websocket controls, but these fixtures still exercise the same v1.0.0 grammar behavior.

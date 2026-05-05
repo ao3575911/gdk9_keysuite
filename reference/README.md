@@ -1,6 +1,7 @@
 # KeySuite Reference Runtime
 
-This directory contains the KeySuite reference runtime for GDk9 v1.0.0.
+This directory contains compatibility shims for the KeySuite runtime and the
+legacy reference import paths for GDk9 v1.0.0.
 
 ## Source
 
@@ -9,6 +10,12 @@ This directory contains the KeySuite reference runtime for GDk9 v1.0.0.
 - `keysuite/src/transitions.py`
 - `keysuite/src/ime_runtime.py`
 - `keysuite/src/reducer.py`
+
+## Current Runtime Layout
+
+- Canonical runtime code now lives in `keysuite/`.
+- The reference modules re-export the canonical implementation for backward compatibility.
+- The hardened runtime adds session isolation, structured events, connection tracking, and API governance without changing the grammar contract.
 
 ## Runtime Contract
 

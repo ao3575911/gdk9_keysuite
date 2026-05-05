@@ -2,6 +2,14 @@
 
 This directory contains release-oriented documentation that complements the standards in `standards/` and the site pages in `site/`.
 
+The hardened runtime release adds focused documentation for:
+
+- session isolation and event-driven execution
+- websocket lifecycle and backpressure handling
+- API authentication, rate limiting, and validation
+- scaling and persistence boundaries
+- threat-model updates for the new transport and governance layers
+
 ## Documents
 
 - `api.md`: Python import surface and REST API quickstart

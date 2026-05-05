@@ -11,9 +11,9 @@ pure reduction.
 ## Current Release
 
 - GDk9 Standard: 1.0.0
-- KeySuite Runtime: 1.1.0.dev0
+- KeySuite Runtime: 1.1.0.dev2
 - Grammar: `grammar/gdk9-v1.0.0.yaml`
-- Package: `keysuite` 1.1.0.dev0
+- Package: `keysuite` 1.1.0.dev2
 
 ## Install
 
@@ -50,7 +50,21 @@ print(session.process(["C", "C", ".", "3", "3", "SPACE"])["outputs"])
 ```
 
 The package also exposes `AsyncRuntime`, `RuntimeSession`, `IMEKernel`,
-`load_grammar`, and `reduce_buffer`.
+`SessionManager`, `EventBus`, `RuntimeMetrics`, `load_grammar`, and `reduce_buffer`.
+
+## Production Runtime
+
+The hardened runtime now adds explicit lifecycle and governance layers on top of
+the deterministic kernel:
+
+- `SessionManager` isolates kernel state, history, and macro context per session.
+- `EventBus` publishes structured runtime events without changing reducer output.
+- `ConnectionManager` tracks websocket lifecycles, message rate, and payload size.
+- `GET /v1/health` and `GET /v1/metrics` expose runtime and observability state.
+- API key authentication and per-session rate limiting gate the REST and websocket surfaces.
+- `InMemoryStore` is the default persistence backend, with `RedisStore` scaffolded for future use.
+
+These additions do not change the GDk9 v1.0.0 grammar or the reducer contract.
 
 ## CLI Reference
 <img width="280" height="64" alt="image" src="https://github.com/user-attachments/assets/b3443385-1189-4285-8ea7-2ff552af32c7" />

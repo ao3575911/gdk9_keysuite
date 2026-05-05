@@ -1,7 +1,19 @@
 # Changelog
 
-## v1.1.0.dev0 - 2026-05-05
+## v1.1.0.dev2 - 2026-05-05
 
+- Refreshed the release documentation set for the hardened runtime additions.
+- Reworked the public and reference documentation to describe the canonical `keysuite/` layout.
+- Bumped the release metadata to `1.1.0.dev2` across package, manifest, and version files.
+- Updated release provenance guidance to include the canonical runtime package in release evidence.
+- Re-stamped the public release pages and version matrix for the new development release.
+
+## v1.1.0.dev1 - 2026-05-05
+
+- Hardened the runtime around explicit session isolation, event publication, websocket connection tracking, API governance, and observability.
+- Added session lifecycle, scaling, and security documentation for the new runtime boundaries.
+- Updated every repository README to reflect the hardened API, websocket, and release surfaces.
+- Bumped the development release metadata to `1.1.0.dev1` across package, manifest, and version files.
 - Added compatibility grammar aliases `grammar/gdk9-v1.0.0-2.yaml` and `grammar/gdk9-v1.0.0-3.yaml` without changing GDk9 v1.0.0 semantics.
 - Added `examples/README.md` with annotated production-grade outcomes for the shipped token fixtures.
 - Fixed the CLI grammar-loader import path so the runtime resolves the bundled default grammar consistently.

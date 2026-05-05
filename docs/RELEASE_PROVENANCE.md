@@ -1,6 +1,6 @@
 # Release Provenance
 
-This repository treats `grammar/gdk9-v1.0.0.yaml`, `standards/`, `reference/`, and `tests/` as the release-critical artifact set.
+This repository treats `grammar/gdk9-v1.0.0.yaml`, `standards/`, `keysuite/`, `reference/`, and `tests/` as the release-critical artifact set.
 
 ## Local Evidence
 
@@ -10,7 +10,7 @@ Run before tagging or publishing:
 pip install -r requirements.lock
 make release-check
 keysuite validate
-python -m compileall -q reference tests
+python -m compileall -q keysuite reference tests
 ```
 
 ## Artifact Hashes

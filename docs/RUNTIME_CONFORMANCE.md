@@ -1,6 +1,6 @@
 # Runtime Conformance
 
-KeySuite v1.1.0.dev0 implements GDk9 v1.0.0 by loading `grammar/gdk9-v1.0.0.yaml`.
+KeySuite v1.1.0.dev2 implements GDk9 v1.0.0 by loading `grammar/gdk9-v1.0.0.yaml`.
 
 ## Evidence Commands
 
@@ -34,3 +34,8 @@ keysuite inspect-grammar --fsm
 - literal escape behavior for syntax tokens
 - stdin and file input
 - REPL command handling
+- session isolation and cleanup
+- structured runtime events
+- websocket lifecycle and heartbeats
+- API authentication and rate limiting
+- metrics and health reporting

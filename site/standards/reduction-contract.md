@@ -7,7 +7,7 @@ kappa(buffer, mode) -> output
 ```
 
 For KeySuite v1.0.0, the reducer is implemented by
-`reference/keysuite/src/reducer.py`. The canonical bind marker is `.`, and the
+`keysuite/reducer.py`. The canonical bind marker is `.`, and the
 first bind marker is the implication boundary:
 
 ```text
