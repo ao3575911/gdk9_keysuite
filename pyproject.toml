@@ -46,7 +46,11 @@ include = ["keysuite*", "reference*"]
 keysuite = ["data/*.yaml"]
 
 [tool.setuptools.data-files]
-"share/keysuite/grammar" = ["grammar/gdk9-v1.0.0.yaml"]
+"share/keysuite/grammar" = [
+    "grammar/gdk9-v1.0.0.yaml",
+    "grammar/gdk9-v1.0.0-2.yaml",
+    "grammar/gdk9-v1.0.0-3.yaml",
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

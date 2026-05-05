@@ -14,7 +14,7 @@ Reduction is a pure function:
 kappa(buffer, mode) -> output
 ```
 
-For KeySuite v1.0.0, `kappa` is implemented by `reference/keysuite/src/reducer.py`.
+For KeySuite v1.0.0, `kappa` is implemented by `keysuite/reducer.py`.
 
 ## Purity Requirements
 

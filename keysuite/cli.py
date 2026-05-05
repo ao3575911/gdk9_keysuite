@@ -12,7 +12,7 @@ from .conformance import ConformanceResult, run_conformance
 from .config import RuntimeConfig
 from .errors import ConfigurationError, RuntimeLimitError
 from .events import token_to_event
-from .grammar_loader import grammar_summary, load_grammar
+from .grammar_loader import DEFAULT_GRAMMAR_FILE, grammar_summary, load_grammar
 from .runtime import IMEKernel, RuntimeSession
 from .reducer import reduce_buffer
 from .symbols import LiteralSymbol

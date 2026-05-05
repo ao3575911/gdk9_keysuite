@@ -1,0 +1,70 @@
+gdk9_grammar:
+  version: 1.0.0
+  artifact: gdk9-v1.0.0-3.yaml
+  standard: GDk9
+  standard_version: 1.0.0
+  keysuite_runtime_version: 1.0.0
+  purpose: Compatibility alias of the canonical GDk9 v1.0.0 grammar for loader coverage.
+  symbols:
+    content: ["a-z", "A-Z", "0-9"]
+    syntax:
+      mode_shift: ":"
+      bind: "."
+    commit: ["SPACE", "ENTER", "TAB", "TIMEOUT"]
+    control:
+      rollback: "BACKSPACE"
+      abort: "ESC"
+    escape:
+      literal: "_"
+  states: [IDLE, COMPOSE, MODE, ERROR]
+  event_classes:
+    CONTENT:
+      jurisdiction: symbols.content
+      description: User-authored literal symbol accepted into the composition buffer.
+    BIND:
+      jurisdiction: symbols.syntax.bind
+      description: Declares an implication boundary inside the buffer.
+    MODE_SHIFT:
+      jurisdiction: symbols.syntax.mode_shift
+      description: Moves the current buffer into mode context and starts mode-scoped composition.
+    COMMIT:
+      jurisdiction: symbols.commit
+      description: Atomically reduces and emits the current buffer when composition exists.
+    ROLLBACK:
+      jurisdiction: symbols.control.rollback
+      description: Removes the most recent buffered symbol without emitting output.
+    ABORT:
+      jurisdiction: symbols.control.abort
+      description: Clears volatile state and returns to IDLE.
+  actions:
+    append: Append the event value to the active buffer.
+    mark_bind: Append the canonical bind marker to the active buffer.
+    set_mode: Store the active buffer as mode context and clear the active buffer.
+    pop: Remove the final buffered symbol if one exists.
+    clear: Reset state, mode, and buffer without output.
+    reduce_and_emit: Run pure reduction and emit only at the commit boundary.
+    noop: Preserve state without output.
+  transitions:
+    IDLE:
+      CONTENT: {next: COMPOSE, action: append}
+      COMMIT: {next: IDLE, action: noop}
+      ABORT: {next: IDLE, action: noop}
+    COMPOSE:
+      CONTENT: {next: COMPOSE, action: append}
+      BIND: {next: COMPOSE, action: mark_bind}
+      MODE_SHIFT: {next: MODE, action: set_mode}
+      COMMIT: {next: IDLE, action: reduce_and_emit}
+      ROLLBACK: {next: COMPOSE, action: pop}
+      ABORT: {next: IDLE, action: clear}
+    MODE:
+      CONTENT: {next: MODE, action: append}
+      COMMIT: {next: IDLE, action: reduce_and_emit}
+      ROLLBACK: {next: MODE, action: pop}
+      ABORT: {next: IDLE, action: clear}
+    ERROR:
+      ABORT: {next: IDLE, action: clear}
+  conformance:
+    deterministic: true
+    emits_only_on_commit: true
+    reduction: pure
+    mutation_scope: volatile_buffer_until_commit
