@@ -17,7 +17,8 @@ def test_cli_root_help_is_structured(capsys):
     assert main(["--help"]) == 0
 
     captured = capsys.readouterr()
-    assert "run,validate,inspect-grammar,dump-fsm,reduce,conformance,repl,completion" in captured.out
+    assert "{run,validate,inspect-grammar,dump-fsm,reduce,conformance,repl,completion}" not in captured.out
+    assert "COMMAND" in captured.out
     assert "keysuite run --tokens" in captured.out
 
 

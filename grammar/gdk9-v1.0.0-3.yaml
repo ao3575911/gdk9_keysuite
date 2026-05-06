@@ -10,7 +10,7 @@ gdk9_grammar:
     syntax:
       mode_shift: ":"
       bind: "."
-    commit: ["SPACE", "ENTER", "TAB", "TIMEOUT"]
+    commit: ["SPACE", "ENTER", "TAB", "TIMEOUT", "DONE"]
     control:
       rollback: "BACKSPACE"
       abort: "ESC"

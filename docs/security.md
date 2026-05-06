@@ -5,8 +5,9 @@ KeySuite hardens the local runtime with explicit access control and traffic gove
 ## API Key Model
 
 - API keys are optional.
-- When `api_keys` is configured, requests under `/v1` must include the configured header.
+- When `api_keys` is configured, requests under `/v1` and websocket connections under `/v1/ws/...` must include the configured header.
 - Missing or invalid keys are rejected before runtime execution.
+- `/docs` remains available for local API exploration. `/openapi.json` marks `/v1` operations with the configured API-key header when authentication is enabled.
 
 ## Rate Limiting
 
@@ -15,7 +16,7 @@ Two levels of rate limiting are enforced:
 - per API key, to cap overall request volume
 - per session, to cap session-specific activity
 
-WebSocket connections also apply per-connection message-rate checks and bounded payload sizes.
+WebSocket connections also apply per-connection message-rate checks, per-frame API-key request limiting, per-session rate limiting, and bounded payload sizes.
 
 ## Input Validation
 
@@ -44,4 +45,5 @@ This keeps failure handling machine-readable without leaking implementation inte
 
 - JSON logging is preferred for production deployment.
 - Metrics expose active sessions, active connections, token throughput, average latency, and error rate.
+- `GET /v1/health` exposes non-secret policy metadata such as route URLs, header names, and rate-limit values. It does not expose configured API keys.
 - The persistence layer is intentionally pluggable so a deployment can move from in-memory state to a shared backend without rewriting runtime logic.

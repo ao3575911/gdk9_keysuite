@@ -25,5 +25,6 @@ def test_loader_accepts_compliant_grammar_aliases(filename):
     validated = validate_grammar(grammar)
 
     assert grammar["artifact"] == filename
+    assert "DONE" in grammar["symbols"]["commit"]
     assert validated["version"] == "1.0.0"
     assert validated["standard_version"] == "1.0.0"

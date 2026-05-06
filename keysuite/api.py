@@ -9,7 +9,8 @@ from typing import Any
 
 from fastapi import FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse
+from fastapi.openapi.utils import get_openapi
+from fastapi.responses import JSONResponse, Response
 from pydantic import BaseModel, Field
 
 from .config import RuntimeConfig
@@ -29,6 +30,15 @@ from .security import AuthenticationError, AuthConfig, RateLimitExceededError, S
 from .telemetry import configure_json_logging
 from .transport import ConnectionManager
 from .version import __version__
+
+
+FAVICON_SVG = """<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+<rect width="32" height="32" rx="6" fill="#111111"/>
+<rect x="8" y="8" width="3" height="16" fill="#1E90FF"/>
+<rect x="14" y="10" width="3" height="12" fill="#1E90FF"/>
+<rect x="20" y="12" width="3" height="8" fill="#1E90FF"/>
+</svg>
+"""
 
 
 class ProcessRequest(BaseModel):
@@ -128,6 +138,70 @@ def _subscription_events(subscription) -> list[dict[str, Any]]:
     return subscription.drain_nowait()
 
 
+def _api_policy(app: FastAPI, config: RuntimeConfig, governance: Governance) -> dict[str, Any]:
+    return {
+        "docs_url": app.docs_url,
+        "openapi_url": app.openapi_url,
+        "auth_required": governance.auth.enabled,
+        "api_key_header": governance.auth.header_name,
+        "rate_limits": {
+            "requests_per_window": config.max_requests_per_window,
+            "window_seconds": config.rate_limit_window_seconds,
+            "messages_per_second": config.max_messages_per_second,
+            "max_payload_size": config.max_payload_size,
+        },
+        "websocket": {
+            "endpoint": "/v1/ws/session/{session_id}",
+            "connection_timeout_seconds": config.connection_timeout_seconds,
+            "heartbeat_interval_seconds": config.heartbeat_interval_seconds,
+        },
+    }
+
+
+def _install_openapi_auth_schema(app: FastAPI, governance: Governance) -> None:
+    def custom_openapi() -> dict[str, Any]:
+        if app.openapi_schema:
+            return app.openapi_schema
+
+        schema = get_openapi(
+            title=app.title,
+            version=app.version,
+            description=app.description,
+            routes=app.routes,
+        )
+        if governance.auth.enabled:
+            components = schema.setdefault("components", {})
+            security_schemes = components.setdefault("securitySchemes", {})
+            security_schemes["ApiKeyAuth"] = {
+                "type": "apiKey",
+                "in": "header",
+                "name": governance.auth.header_name,
+            }
+            for path, operations in schema.get("paths", {}).items():
+                if not path.startswith("/v1"):
+                    continue
+                for operation in operations.values():
+                    if isinstance(operation, dict):
+                        operation.setdefault("security", [{"ApiKeyAuth": []}])
+
+        app.openapi_schema = schema
+        return app.openapi_schema
+
+    app.openapi = custom_openapi
+
+
+async def _send_ws_error(
+    websocket: WebSocket,
+    session_id: str,
+    *,
+    message: str,
+    error_type: str,
+    **details: Any,
+) -> None:
+    payload = {"message": message, "error_type": error_type, **details}
+    await websocket.send_json(runtime_event("ERROR", session_id, payload))
+
+
 def create_app(runtime: Runtime | None = None) -> FastAPI:
     runtime = runtime or Runtime()
     config = runtime.config
@@ -154,6 +228,7 @@ def create_app(runtime: Runtime | None = None) -> FastAPI:
         ),
     )
     app.state.logger = configure_json_logging(level=logging.INFO if config.json_logging else logging.WARNING)
+    _install_openapi_auth_schema(app, app.state.governance)
 
     @app.middleware("http")
     async def guard_requests(request: Request, call_next):
@@ -174,6 +249,14 @@ def create_app(runtime: Runtime | None = None) -> FastAPI:
                 http_exc = exc if isinstance(exc, HTTPException) else _map_exception(exc)
                 return _error_response(http_exc.status_code, _normalize_http_exception(http_exc)["code"], _normalize_http_exception(http_exc)["message"], _normalize_http_exception(http_exc)["details"])
         return await call_next(request)
+
+    @app.get("/favicon.ico", include_in_schema=False)
+    def favicon() -> Response:
+        return Response(
+            content=FAVICON_SVG,
+            media_type="image/svg+xml",
+            headers={"Cache-Control": "public, max-age=86400"},
+        )
 
     @app.exception_handler(HTTPException)
     async def handle_http_exception(_: Request, exc: HTTPException) -> JSONResponse:
@@ -201,6 +284,7 @@ def create_app(runtime: Runtime | None = None) -> FastAPI:
             "metrics": runtime.metrics.snapshot(),
             "session_manager": runtime.session_manager.snapshot(),
             "connections": app.state.connection_manager.snapshot(),
+            "api": _api_policy(app, config, app.state.governance),
         }
 
     @app.get("/v1/metrics")
@@ -243,7 +327,10 @@ def create_app(runtime: Runtime | None = None) -> FastAPI:
                 try:
                     await connection_state.websocket.close(code=1001)
                 except Exception:
-                    pass
+                    app.state.logger.warning(
+                        "failed to close websocket during session destroy",
+                        exc_info=True,
+                    )
             app.state.connection_manager.snapshot()
             runtime.metrics.set_active_connections(app.state.connection_manager.connection_count())
             return {"session_id": session_id, "destroyed": True, "closed_connections": len(closed)}
@@ -308,6 +395,7 @@ def create_app(runtime: Runtime | None = None) -> FastAPI:
         subscription = None
         try:
             api_key = app.state.governance.authenticate(websocket)
+            app.state.governance.check_request(api_key)
         except Exception:
             await websocket.close(code=4401)
             return
@@ -386,7 +474,28 @@ def create_app(runtime: Runtime | None = None) -> FastAPI:
                     )
                     break
 
-                app.state.governance.check_session(session.session_id)
+                try:
+                    app.state.governance.check_request(api_key)
+                    session = runtime.get_session(session.session_id)
+                    app.state.governance.check_session(session.session_id)
+                except RateLimitExceededError as exc:
+                    await _send_ws_error(
+                        websocket,
+                        session.session_id,
+                        message=str(exc),
+                        error_type="RateLimitExceeded",
+                    )
+                    await websocket.close(code=4408)
+                    break
+                except SessionNotFoundError as exc:
+                    await _send_ws_error(
+                        websocket,
+                        session.session_id,
+                        message=str(exc),
+                        error_type="SessionNotFound",
+                    )
+                    await websocket.close(code=4404)
+                    break
 
                 try:
                     message = json.loads(raw_message)
@@ -406,6 +515,7 @@ def create_app(runtime: Runtime | None = None) -> FastAPI:
                 kind = message.get("type", "token")
                 if kind == "pong":
                     connection.touch()
+                    session.touch()
                     await websocket.send_json(runtime_event("HEARTBEAT", session.session_id, {"status": "ok"}))
                     continue
 

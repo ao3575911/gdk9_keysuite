@@ -20,6 +20,12 @@ The streaming session endpoint is:
 {"type": "tokens", "values": ["C", "C", "SPACE"]}
 ```
 
+### Heartbeat response
+
+```json
+{"type": "pong"}
+```
+
 ### Undo / redo
 
 ```json
@@ -64,5 +70,9 @@ All runtime events are delivered as:
 
 - Connections close after the configured idle timeout if no frames arrive.
 - The server sends a `PING` event before closing on timeout.
+- Client `pong` frames refresh both connection liveness and the owning session idle TTL.
 - Message payloads are size-limited.
 - Per-connection message rate limits are enforced.
+- When API keys are configured, the websocket handshake and each received frame also consume the API-key request limit.
+- Session-specific websocket activity consumes the session rate limit.
+- Rate-limit failures are returned as `ERROR` events before the socket closes.

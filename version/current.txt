@@ -1,8 +1,8 @@
 filename: current.txt
 gdk9_standard_version: 1.0.0
-keysuite_runtime_version: 1.1.0.dev2
+keysuite_runtime_version: 1.1.0.dev3
 grammar_file: grammar/gdk9-v1.0.0.yaml
 grammar_version: 1.0.0
 package_name: keysuite
-package_version: 1.1.0.dev2
-updated: 2026-05-05
+package_version: 1.1.0.dev3
+updated: 2026-05-06

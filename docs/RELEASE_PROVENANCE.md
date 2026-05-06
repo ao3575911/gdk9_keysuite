@@ -8,10 +8,16 @@ Run before tagging or publishing:
 
 ```bash
 pip install -r requirements.lock
+make test
+make conformance
 make release-check
 keysuite validate
 python -m compileall -q keysuite reference tests
 ```
+
+For the `1.1.0.dev3` line, retain release-check output that shows the canonical
+`CC→33` smoke result, `32/32` conformance vectors, and the expected invalid-token
+failure from `scripts/release_acceptance.sh`.
 
 ## Artifact Hashes
 

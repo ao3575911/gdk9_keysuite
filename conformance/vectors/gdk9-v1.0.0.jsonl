@@ -6,3 +6,6 @@
 {"id":"mode.basic.001","tokens":["X",":","A","B","SPACE"],"output":"X(AB)","outputs":["X(AB)"],"final_state":"IDLE","exit_code":0}
 {"id":"commit.idle.001","tokens":["SPACE"],"output":null,"outputs":[],"final_state":"IDLE","exit_code":0}
 {"id":"commit.timeout.001","tokens":["A","B","TIMEOUT"],"output":"AB","outputs":["AB"],"final_state":"IDLE","exit_code":0}
+{"id":"commit.done.001","tokens":["A","B","DONE"],"output":"AB","outputs":["AB"],"final_state":"IDLE","exit_code":0}
+{"id":"commit.done.implication.001","tokens":["A",".","B","DONE"],"output":"A→B","outputs":["A→B"],"final_state":"IDLE","exit_code":0}
+{"id":"commit.done.mode.001","tokens":["X",":","A","B","DONE"],"output":"X(AB)","outputs":["X(AB)"],"final_state":"IDLE","exit_code":0}

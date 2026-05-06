@@ -6,7 +6,8 @@ The vectors are implementation-independent. Any GDk9 runtime, regardless of lang
 
 The hardened KeySuite runtime still uses these vectors as the canonical behavior
 check. Session isolation, event publication, and websocket transport do not
-change the vector outputs.
+change the vector outputs. The suite covers both `SPACE` and `DONE` as
+grammar-declared commit events.
 
 ## Format
 

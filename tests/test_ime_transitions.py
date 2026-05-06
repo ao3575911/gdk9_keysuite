@@ -126,7 +126,7 @@ def test_grammar_loader_returns_nested_gdk9_grammar_content():
     grammar = load_grammar("grammar/gdk9-v1.0.0.yaml")
 
     assert grammar["version"] == "1.0.0"
-    assert grammar["symbols"]["commit"] == ["SPACE", "ENTER", "TAB", "TIMEOUT"]
+    assert grammar["symbols"]["commit"] == ["SPACE", "ENTER", "TAB", "TIMEOUT", "DONE"]
     assert grammar["states"] == ["IDLE", "COMPOSE", "MODE", "ERROR"]
 
 

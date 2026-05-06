@@ -263,7 +263,7 @@ def _build_parser() -> argparse.ArgumentParser:
         parents=[common],
     )
     parser.add_argument("--version", action="version", version=f"KeySuite {__version__}")
-    subparsers = parser.add_subparsers(dest="command")
+    subparsers = parser.add_subparsers(dest="command", metavar="COMMAND")
 
     run = subparsers.add_parser(
         "run",

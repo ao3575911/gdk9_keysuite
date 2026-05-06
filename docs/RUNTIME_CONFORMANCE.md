@@ -1,6 +1,6 @@
 # Runtime Conformance
 
-KeySuite v1.1.0.dev2 implements GDk9 v1.0.0 by loading `grammar/gdk9-v1.0.0.yaml`.
+KeySuite v1.1.0.dev3 implements GDk9 v1.0.0 by loading `grammar/gdk9-v1.0.0.yaml`.
 
 ## Evidence Commands
 
@@ -28,6 +28,7 @@ keysuite inspect-grammar --fsm
 - unknown action rejection
 - undeclared jurisdiction rejection
 - no output before commit
+- `SPACE` and `DONE` commit events
 - strict grammar schema validation
 - non-zero CLI exit on unrecovered error
 - trace, debug, and JSON CLI output
@@ -38,4 +39,5 @@ keysuite inspect-grammar --fsm
 - structured runtime events
 - websocket lifecycle and heartbeats
 - API authentication and rate limiting
+- OpenAPI authentication metadata and health policy metadata
 - metrics and health reporting

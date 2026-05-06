@@ -11,9 +11,14 @@ These vectors are canonical examples for the KeySuite reference runtime.
 | `X : A B` | `X(AB)` | mode-scoped reduction |
 | `A . B . C` | `A→B.C` | first bind marker is the implication boundary |
 | `A _ . B` | `A.B` | escaped bind marker is literal content |
+| `A B DONE` | `AB` | `DONE` is an explicit commit token |
+| `A . B DONE` | `A→B` | `DONE` commits implication output |
+| `X : A B DONE` | `X(AB)` | `DONE` commits mode-scoped output |
 | `@` | error | invalid token enters unrecovered `ERROR` |
 
 The CLI appends `SPACE` as an automatic commit unless `--no-auto-commit` is used.
+Vectors also cover explicit `DONE` commits through the same grammar-controlled
+transition path.
 
 Run the full vector suite with:
 

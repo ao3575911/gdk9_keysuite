@@ -11,9 +11,9 @@ pure reduction.
 ## Current Release
 
 - GDk9 Standard: 1.0.0
-- KeySuite Runtime: 1.1.0.dev2
+- KeySuite Runtime: 1.1.0.dev3
 - Grammar: `grammar/gdk9-v1.0.0.yaml`
-- Package: `keysuite` 1.1.0.dev2
+- Package: `keysuite` 1.1.0.dev3
 
 ## Install
 
@@ -61,7 +61,9 @@ the deterministic kernel:
 - `EventBus` publishes structured runtime events without changing reducer output.
 - `ConnectionManager` tracks websocket lifecycles, message rate, and payload size.
 - `GET /v1/health` and `GET /v1/metrics` expose runtime and observability state.
+- `/docs`, `/openapi.json`, and `/favicon.ico` support local API exploration.
 - API key authentication and per-session rate limiting gate the REST and websocket surfaces.
+- Websocket handshakes, heartbeat traffic, and per-frame auth/rate limits are covered by regression tests.
 - `InMemoryStore` is the default persistence backend, with `RedisStore` scaffolded for future use.
 
 These additions do not change the GDk9 v1.0.0 grammar or the reducer contract.
@@ -155,6 +157,10 @@ emits:
 ```text
 A.B
 ```
+
+The grammar accepts both `SPACE` and `DONE` as commit tokens. Existing CLI
+behavior is unchanged: the CLI still appends `SPACE` automatically unless
+`--no-auto-commit` is used.
 
 ## Debug Levels
 

@@ -877,9 +877,11 @@ class AsyncRuntime:
         return self._queue
 
     async def _queue_worker(self) -> None:
-        assert self._queue is not None
+        queue = self._queue
+        if queue is None:
+            raise RuntimeLimitError("async queue is not initialized")
         while True:
-            job = await self._queue.get()
+            job = await queue.get()
             future: asyncio.Future[Any] = job["future"]
             try:
                 result = job["runner"]()
@@ -891,8 +893,8 @@ class AsyncRuntime:
                 if not future.done():
                     future.set_exception(exc)
             finally:
-                self._queue.task_done()
-                self.runtime.metrics.set_queue_depth(self._queue.qsize())
+                queue.task_done()
+                self.runtime.metrics.set_queue_depth(queue.qsize())
 
     async def _submit(self, operation: str, runner):
         if self.max_queue_size > 0:

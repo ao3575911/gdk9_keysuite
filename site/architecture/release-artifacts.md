@@ -1,6 +1,6 @@
 # Release Artifacts
 
-GDk9 v1.0.0 and KeySuite v1.1.0.dev2 publish a synchronized release tree:
+GDk9 v1.0.0 and KeySuite v1.1.0.dev3 publish a synchronized release tree:
 
 - `standards/` contains the normative standard documents.
 - `grammar/gdk9-v1.0.0.yaml` is the machine-readable control artifact.
