@@ -1,9 +1,9 @@
 PYTHON ?= $(if $(wildcard .venv/bin/python),.venv/bin/python,python3)
 PYTEST ?= $(PYTHON) -m pytest
-KEYSUITE ?= $(PYTHON) -m reference.keysuite.src.main
+KEYSUITE ?= $(if $(wildcard .venv/bin/keysuite),.venv/bin/keysuite,keysuite)
 EXAMPLE ?= C C . 3 3
 
-.PHONY: bootstrap install test conformance run docs release-check clean bandit
+.PHONY: bootstrap install test conformance run docs lint security release-check clean bandit
 
 bootstrap:
 	$(PYTHON) -m venv .venv
@@ -22,13 +22,18 @@ conformance:
 docs:
 	sh make_docs.sh
 
-release-check: test conformance
+lint:
+	ruff check keysuite reference tests
+
+security:
+	bandit -c .bandit -r keysuite reference
+
+release-check: test conformance lint security
 	$(KEYSUITE) "$(EXAMPLE)"
-	$(PYTHON) -m compileall -q reference tests
+	$(PYTHON) -m compileall -q keysuite reference tests
 	./scripts/release_acceptance.sh
 
-bandit:
-	bandit -r .
+bandit: security
 
 run:
 	$(KEYSUITE) "$(EXAMPLE)"

@@ -264,6 +264,8 @@ class RuntimeConfig:
             raise ConfigurationError("version_policy must be 'strict' or 'latest-compatible'")
         if values["queue_policy"] not in {"reject", "drop"}:
             raise ConfigurationError("queue_policy must be 'reject' or 'drop'")
+        if values["persistence_backend"] not in {"memory", "redis"}:
+            raise ConfigurationError("persistence_backend must be 'memory' or 'redis'")
         values["enable_metrics"] = _coerce_bool(values["enable_metrics"], "enable_metrics")
         values["enable_tracing"] = _coerce_bool(values["enable_tracing"], "enable_tracing")
         values["json_logging"] = _coerce_bool(values["json_logging"], "json_logging")

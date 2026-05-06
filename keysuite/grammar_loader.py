@@ -5,7 +5,6 @@ from pathlib import Path
 
 import yaml
 
-from .errors import GrammarVersionError
 from .grammar import Grammar
 from .schema import validate_grammar
 from .version import __version__
@@ -63,4 +62,3 @@ def grammar_summary(grammar: Grammar | dict) -> dict:
         "source_path": getattr(grammar, "source_path", None),
         "version_policy": getattr(grammar, "version_policy", None),
     }
-

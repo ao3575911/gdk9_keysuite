@@ -2,7 +2,7 @@
 
 ## Project Structure & Module Organization
 
-This repository contains the GDk9 standards stack and the KeySuite reference runtime. Runtime source lives in `reference/keysuite/src/`, with the CLI entry point in `main.py`, reducer logic in `reducer.py`, grammar loading in `grammar_loader.py`, and state handling in `ime_runtime.py`. Tests live in `tests/` and cover basic implication, repeatability, and reducer behavior. Versioned normative documents are under `standards/`; machine-readable grammar is in `grammar/gdk9-v1.0.0.yaml`; generated documentation pages are in `site/`; logos are in `branding/logos/`; proposals are in `proposals/`.
+This repository contains the GDk9 standards stack and the KeySuite reference runtime. Canonical runtime source lives in `keysuite/`, with the CLI entry point in `keysuite/cli.py`, reducer logic in `keysuite/reducer.py`, grammar loading in `keysuite/grammar_loader.py`, and state handling in `keysuite/runtime.py`. The `reference/keysuite/src/` modules are compatibility shims and should stay thin. Tests live in `tests/` and cover basic implication, repeatability, reducer behavior, API hardening, and runtime lifecycle. Versioned normative documents are under `standards/`; machine-readable grammar is in `grammar/gdk9-v1.0.0.yaml`; generated documentation pages are in `site/`; logos are in `branding/logos/`; proposals are in `proposals/`.
 
 ## Build, Test, and Development Commands
 
@@ -11,6 +11,7 @@ This repository contains the GDk9 standards stack and the KeySuite reference run
 - `pip install -r requirements.txt`: install runtime and test dependencies, including `pyyaml` and `pytest`.
 - `pytest` or `make test`: run the test suite.
 - `keysuite "C C . 3 3"` or `make run`: run the CLI example.
+- `make lint` and `make security`: run Ruff and Bandit checks.
 - `make clean`: remove build, distribution, egg-info, and Python cache artifacts.
 
 ## Coding Style & Naming Conventions

@@ -25,6 +25,10 @@ class ConformanceResult:
     error: str | None = None
 
 
+class ConformanceVectorError(ValueError):
+    """Raised when a conformance vector suite cannot be used as a release gate."""
+
+
 def load_vectors(path: str | Path) -> list[ConformanceVector]:
     path = Path(path)
     vectors: list[ConformanceVector] = []
@@ -119,9 +123,15 @@ def run_vector(vector: ConformanceVector, runner: RuntimeRunner) -> ConformanceR
 def run_conformance(path: str | Path, runner: RuntimeRunner) -> list[ConformanceResult]:
     results: list[ConformanceResult] = []
 
-    for file_path in iter_vector_files(path):
+    files = list(iter_vector_files(path))
+    if not files:
+        raise ConformanceVectorError(f"No conformance vector files found under: {Path(path)}")
+
+    for file_path in files:
         for vector in load_vectors(file_path):
             results.append(run_vector(vector, runner))
 
-    return results
+    if not results:
+        raise ConformanceVectorError(f"No conformance vectors found under: {Path(path)}")
 
+    return results

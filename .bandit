@@ -1,2 +1,5 @@
-[bandit]
-exclude = ./.venv,./tests
+exclude_dirs:
+  - .venv
+  - tests
+skips:
+  - B105

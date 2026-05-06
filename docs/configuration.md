@@ -16,6 +16,8 @@ KeySuite configuration is loaded in this order:
 - `KEYSUITE_VERSION_POLICY`
 - `KEYSUITE_MAX_MACRO_EXPANSION_DEPTH`
 - `KEYSUITE_HISTORY_LIMIT`
+- `KEYSUITE_PERSISTENCE_BACKEND`
+- `KEYSUITE_PERSISTENCE_URL`
 
 ## `keysuite.toml`
 
@@ -26,6 +28,9 @@ max_token_count = 4096
 max_macro_expansion_depth = 16
 history_limit = 128
 version_policy = "latest-compatible"
+persistence_backend = "memory"
+# persistence_url is required when persistence_backend = "redis"
+# persistence_url = "redis://localhost:6379/0"
 
 [macros]
 pair = ["C", "C"]
@@ -41,3 +46,5 @@ Supported `version_policy` values:
 - Macro definitions are validated against the loaded grammar.
 - Oversized buffers and token streams fail with structured runtime errors.
 - History snapshots are bounded by `history_limit`.
+- Supported `persistence_backend` values are `memory` and `redis`.
+- `redis` is an external-backend scaffold and fails fast unless `persistence_url` is configured or an explicit store is injected by the caller. It no longer silently downgrades to in-memory state.

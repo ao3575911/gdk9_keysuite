@@ -5,12 +5,13 @@ import re
 import uuid
 import threading
 import time
-from dataclasses import dataclass, field, replace
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Iterable
 
 from .config import RuntimeConfig
 from .errors import (
+    ConfigurationError,
     HistoryError,
     MacroExpansionError,
     RuntimeLimitError,
@@ -782,7 +783,11 @@ class Runtime:
         self.metrics = metrics or RuntimeMetrics()
         if store is None:
             if self.config.persistence_backend == "redis":
-                store = RedisStore(self.config.persistence_url) if self.config.persistence_url else InMemoryStore()
+                if not self.config.persistence_url:
+                    raise ConfigurationError(
+                        "persistence_backend='redis' requires persistence_url or an explicit store"
+                    )
+                store = RedisStore(self.config.persistence_url)
             else:
                 store = InMemoryStore()
         self.store = store
@@ -884,7 +889,7 @@ class AsyncRuntime:
             job = await queue.get()
             future: asyncio.Future[Any] = job["future"]
             try:
-                result = job["runner"]()
+                result = await asyncio.to_thread(job["runner"])
                 if asyncio.iscoroutine(result):
                     result = await result
                 if not future.done():
@@ -908,7 +913,7 @@ class AsyncRuntime:
                 raise RuntimeLimitError("async processing queue is overloaded") from exc
             self.runtime.metrics.set_queue_depth(queue.qsize())
             return await future
-        return runner()
+        return await asyncio.to_thread(runner)
 
     async def create_session(self, session_id: str | None = None, *, config: RuntimeConfig | None = None) -> RuntimeSession:
         async with self._lock_for(session_id):

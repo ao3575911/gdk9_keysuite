@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from packaging.version import InvalidVersion, Version
 
-from .version import __grammar_compatibility__, __version__
+from .version import __version__
 
 
 TOP_LEVEL_KEYS = {

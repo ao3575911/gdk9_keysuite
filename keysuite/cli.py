@@ -5,15 +5,15 @@ import hashlib
 import json
 import os
 import sys
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 
-from .conformance import ConformanceResult, run_conformance
+from .conformance import ConformanceResult, ConformanceVectorError, run_conformance
 from .config import RuntimeConfig
 from .errors import ConfigurationError, RuntimeLimitError
-from .events import token_to_event
-from .grammar_loader import DEFAULT_GRAMMAR_FILE, grammar_summary, load_grammar
-from .runtime import IMEKernel, RuntimeSession
+from .events import token_to_event as token_to_event
+from .grammar_loader import DEFAULT_GRAMMAR_FILE, load_grammar
+from .runtime import RuntimeSession
 from .reducer import reduce_buffer
 from .symbols import LiteralSymbol
 from .transitions import generate_transition_table
@@ -794,16 +794,19 @@ def _dispatch(ns: argparse.Namespace, grammar: dict, table: dict, grammar_file: 
 
     if command == "conformance":
         vector_path = Path(ns.vector_path) if getattr(ns, "vector_path", None) else conformance_path()
-        results = run_conformance(
-            vector_path,
-            lambda tokens: RuntimeSession(
-                grammar,
-                table,
-                config=RuntimeConfig.from_sources(explicit={"debug_level": debug_level if debug_level is not None else (2 if trace_enabled else 0)}),
-                auto_commit=not no_auto_commit,
-                debug_level=debug_level if debug_level is not None else (2 if trace_enabled else 0),
-            ).process(tokens, finalize=True),
-        )
+        try:
+            results = run_conformance(
+                vector_path,
+                lambda tokens: RuntimeSession(
+                    grammar,
+                    table,
+                    config=RuntimeConfig.from_sources(explicit={"debug_level": debug_level if debug_level is not None else (2 if trace_enabled else 0)}),
+                    auto_commit=not no_auto_commit,
+                    debug_level=debug_level if debug_level is not None else (2 if trace_enabled else 0),
+                ).process(tokens, finalize=True),
+            )
+        except (FileNotFoundError, ConformanceVectorError, ValueError) as exc:
+            raise RuntimeFailure(str(exc)) from exc
         payload = _conformance_payload(results, vector_path, grammar_file, grammar_hash)
         _print_conformance(payload, json_output)
         return EXIT_OK if payload["status"] == "ok" else EXIT_RUNTIME

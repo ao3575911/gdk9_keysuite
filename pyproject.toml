@@ -31,6 +31,12 @@ dependencies = [
     "uvicorn>=0.30,<1",
 ]
 
+[project.optional-dependencies]
+dev = [
+    "bandit>=1.7,<2",
+    "ruff>=0.8,<1",
+]
+
 [project.scripts]
 keysuite = "keysuite.cli:main"
 
