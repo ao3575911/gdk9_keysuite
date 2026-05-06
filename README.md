@@ -12,8 +12,8 @@ pure reduction.
 
 - GDk9 Standard: 1.0.0
 - KeySuite Runtime: 1.1.0.dev3
-- Grammar: `grammar/gdk9-v1.0.0.yaml`
-- Package: `keysuite` 1.1.0.dev3
+- Grammar: `grammar/gdk9-v1.0.0.yaml` version 1.0.0
+- Package: `keysuite` version 1.1.0.dev3
 
 ## Install
 
@@ -67,6 +67,31 @@ the deterministic kernel:
 - `InMemoryStore` is the default persistence backend, with `RedisStore` scaffolded for future use.
 
 These additions do not change the GDk9 v1.0.0 grammar or the reducer contract.
+
+## Web App
+
+The `web/` directory contains a Next.js + TypeScript playground for explaining
+and demoing KeySuite. It can call the local FastAPI server through a configurable
+server-side API base URL, and falls back to labeled demo responses for vetted
+sample streams when the API is not running.
+
+```bash
+make web-install
+make web-dev
+```
+
+To connect the playground to the Python API:
+
+```bash
+uvicorn keysuite.api:create_app --factory --reload --host 127.0.0.1 --port 8000
+cd web
+cp .env.local.example .env.local
+npm run dev
+```
+
+Set `KEYSUITE_API_BASE_URL=http://127.0.0.1:8000` in `web/.env.local`.
+If API keys are configured with `KEYSUITE_API_KEYS`, also set `KEYSUITE_API_KEY`
+for the web app route handler.
 
 ## CLI Reference
 <img width="280" height="64" alt="image" src="https://github.com/user-attachments/assets/b3443385-1189-4285-8ea7-2ff552af32c7" />

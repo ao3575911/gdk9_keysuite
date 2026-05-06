@@ -9,8 +9,9 @@ GDk9 is deterministic symbolic implication infrastructure. KeySuite is the refer
 ## System State
 
 - GDk9 Standard: 1.0.0
-- KeySuite Runtime: 1.0.0
+- KeySuite Runtime: 1.1.0.dev3
 - Grammar: `grammar/gdk9-v1.0.0.yaml` version 1.0.0
+- Package: `keysuite` version 1.1.0.dev3
 - Runtime source: `reference/keysuite/src/`
 - Normative standards: `standards/`
 - Human documentation: `site/` and `docs/`

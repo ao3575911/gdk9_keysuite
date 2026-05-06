@@ -24,10 +24,12 @@ failure from `scripts/release_acceptance.sh`.
 Generate release checksums with:
 
 ```bash
-python -m hashlib sha256 grammar/gdk9-v1.0.0.yaml VERSION version/current.txt
+sha256sum grammar/gdk9-v1.0.0.yaml VERSION version/current.txt
 ```
 
-Attach checksum output to release notes or release assets.
+This command prints checksum records to stdout. Attach that output to release
+notes or a separate checksum artifact; do not write checksum output into
+`version/current.txt`, which is the release version manifest.
 
 ## Registry and Signing
 

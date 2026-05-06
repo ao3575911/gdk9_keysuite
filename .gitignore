@@ -7,3 +7,9 @@ __pycache__/
 build/
 dist/
 *.zip
+node_modules/
+web/node_modules/
+web/.next/
+web/out/
+web/.env*.local
+*.tsbuildinfo

@@ -3,7 +3,7 @@ PYTEST ?= $(PYTHON) -m pytest
 KEYSUITE ?= $(if $(wildcard .venv/bin/keysuite),.venv/bin/keysuite,keysuite)
 EXAMPLE ?= C C . 3 3
 
-.PHONY: bootstrap install test conformance run docs lint security release-check clean bandit
+.PHONY: bootstrap install test conformance run docs lint security web-install web-dev web-build web-check release-check clean bandit
 
 bootstrap:
 	$(PYTHON) -m venv .venv
@@ -28,7 +28,19 @@ lint:
 security:
 	bandit -c .bandit -r keysuite reference
 
-release-check: test conformance lint security
+web-install:
+	cd web && npm install
+
+web-dev:
+	cd web && npm run dev
+
+web-build:
+	cd web && npm run build
+
+web-check:
+	cd web && npm run lint && npm run typecheck && npm run build
+
+release-check: test conformance lint security web-check
 	$(KEYSUITE) "$(EXAMPLE)"
 	$(PYTHON) -m compileall -q keysuite reference tests
 	./scripts/release_acceptance.sh
