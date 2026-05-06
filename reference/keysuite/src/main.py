@@ -47,3 +47,7 @@ from keysuite.cli import (  # noqa: F401
     main,
     token_to_event,
 )
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
